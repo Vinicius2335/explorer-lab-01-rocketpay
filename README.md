@@ -45,4 +45,6 @@ Esse projeto está sob a licença MIT.
 
 ---
 
+[LINK](https://explorer-lab-rocketpay-zeta.vercel.app) para o site do projeto.
+
 Feito com ♥ by Rocketseat :wave: [Participe da nossa comunidade!](https://discord.gg/rocketseat)
