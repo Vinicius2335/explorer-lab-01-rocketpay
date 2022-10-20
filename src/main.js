@@ -17,10 +17,14 @@ function setCardType(type){
   ccLogo.setAttribute("src", `cc-${type}.svg`)
 }
 
-setCardType("mastercard");
+// setCardType("mastercard");
 
 // disponibilizando uma biblioteca global
 globalThis.setCardType = setCardType
+
+/********************************
+    SecurityCode
+**********************************/
 
 const securityCode = document.querySelector("#security-code");
 // padrao da mascara para apenas 4 digitos
@@ -28,6 +32,20 @@ const securityCodePattern = {
   mask: "0000"
 }
 const securityCodeMasked = IMask(securityCode, securityCodePattern);
+
+// on = addEventListener
+securityCodeMasked.on("accept", () => {
+  updateSercurityCode(securityCodeMasked.value);
+});
+
+function updateSercurityCode(code){
+  const ccSecurity = document.querySelector(".cc-security .value");
+  ccSecurity.innerText = code.length === 0 ? "123": code;
+}
+
+/********************************
+    ExpirationDate
+**********************************/
 
 // mascara: mes/ano -> 01-12/min ano atual, max 10 anos(32)
 const expirationDate = document.querySelector("#expiration-date");
@@ -47,6 +65,19 @@ const expirationDatePattern = {
   }
 }
 const expirationDateMasked = IMask(expirationDate, expirationDatePattern);
+
+expirationDateMasked.on("accept", () => {
+  updateExpirationDate(expirationDateMasked.value);
+});
+
+function updateExpirationDate(date){
+  const ccExpirationDate = document.querySelector(".cc-extra .value");
+  ccExpirationDate.innerText = date.length === 0 ? "02/32" : date;
+}
+
+/********************************
+    CardNumber
+**********************************/
 
 const cardNumber = document.querySelector("#card-number");
 const cardNumberPattern = {
@@ -77,15 +108,52 @@ const cardNumberPattern = {
       return number.match(item.regex);
     });
 
-    console.log(foundMask);
+    // console.log(foundMask);
 
     return foundMask;
   }
 }
 const cardNumberMasked = IMask(cardNumber, cardNumberPattern);
 
+cardNumberMasked.on("accept", () => {
+  const cardType = cardNumberMasked.masked.currentMask.cardtype;
+  setCardType(cardType);
+  updateCardNumber(cardNumberMasked.value);
+});
+
+function updateCardNumber(number){
+  const ccNumber = document.querySelector(".cc-number");
+  ccNumber.innerText = number.length === 0 ? "1234 5678 9012 3456" : number;
+}
+
+/********************************
+    AddButton
+**********************************/
+
+const addButton = document.querySelector("#add-card");
+addButton.addEventListener("click", () => {
+  alert("Cartão adicionado");
+});
+
+document.querySelector("form").addEventListener("submit", (event) => {
+  event.preventDefault();
+})
+
+/********************************
+    CardHolder
+**********************************/
+
+const cardHolder = document.querySelector("#card-holder");
+cardHolder.addEventListener("input", () => {
+  const ccHolder = document.querySelector(".cc-holder .value");
+  ccHolder.innerText = cardHolder.value.length === 0 ? "FULANO DA SILVA" : cardHolder.value;
+});
+
+
+
 /*
-  regex-> usado para buscar padroes dentro de texto
+      REGEX
+  Usado para buscar padroes dentro de texto
   // procure na string todas as letras maiusculas de A-Z e devolva dentro de um Array
   const matches = 'aBC'.matche[/A-Z/];
   output: [B, C]
